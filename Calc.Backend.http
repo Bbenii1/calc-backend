@@ -1,0 +1,6 @@
+@Calc.Backend_HostAddress = http://localhost:8081
+
+GET {{Calc.Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
