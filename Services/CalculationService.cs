@@ -83,6 +83,20 @@ namespace Calc.Backend.Services
 
     public class CalculationService : ICalculationService
     {
+        // Floating-point normalization
+        private const double ZeroEpsilon = 1e-12;   // clamp near-zero values
+        private const int DisplayPrecision = 12;    // decimal rounding precision
+        
+        private static double NormalizeResult(double value)
+        {
+            // Clamp extremely small numbers to zero
+            if (Math.Abs(value) < ZeroEpsilon)
+                return 0.0;
+
+            // Round to avoid representation noise like 0.9999999999999998
+            return Math.Round(value, DisplayPrecision);
+        }
+    
         // ── Token types ────────────────────────────────────────────────
         private enum TokenType
         {
@@ -461,7 +475,7 @@ namespace Calc.Backend.Services
             if (stack.Count != 1)
                 throw new InvalidOperationException("Invalid expression – leftover values on stack");
 
-            return stack.Pop();
+            return NormalizeResult(stack.Pop());
         }
 
         // ── Operators ──────────────────────────────────────────────────
